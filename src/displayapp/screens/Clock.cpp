@@ -14,6 +14,7 @@
 #include "displayapp/screens/WatchFaceAnalog.h"
 #include "displayapp/screens/WatchFacePineTimeStyle.h"
 #include "displayapp/screens/WatchFaceCasioStyleG7710.h"
+#include "displayapp/screens/dinnertime/WatchFaceDinnerTime.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -54,6 +55,9 @@ Clock::Clock(DisplayApp* app,
           break;
         case 5:
           return WatchFaceCasioStyleG7710();
+          break;
+        case 6:
+          return WatchFaceDinnerTime();
           break;
       }
       return WatchFaceDigitalScreen();
@@ -127,6 +131,18 @@ std::unique_ptr<Screen> Clock::WatchFaceInfineatScreen() {
 
 std::unique_ptr<Screen> Clock::WatchFaceCasioStyleG7710() {
   return std::make_unique<Screens::WatchFaceCasioStyleG7710>(app,
+                                                             dateTimeController,
+                                                             batteryController,
+                                                             bleController,
+                                                             notificationManager,
+                                                             settingsController,
+                                                             heartRateController,
+                                                             motionController,
+                                                             filesystem);
+}
+
+std::unique_ptr<Screen> Clock::WatchFaceDinnerTime() {
+  return std::make_unique<Screens::DinnerTime::WatchFaceDinnerTime>(app,
                                                              dateTimeController,
                                                              batteryController,
                                                              bleController,

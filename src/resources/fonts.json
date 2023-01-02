@@ -58,5 +58,29 @@
       "size": 115,
       "format": "bin",
       "target_path": "/fonts/"
+   },
+   "din_1451_std_engschrift_28" : {
+      "sources": [
+         {
+            "file": "fonts/DIN 1451 Std Engschrift.ttf",
+            "symbols": " %0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+         }
+      ],
+      "bpp": 1,
+      "size": 28,
+      "format": "bin",
+      "target_path": "/fonts/"
+   },
+   "din_1451_std_engschrift_158" : {
+      "sources": [
+         {
+            "file": "fonts/DIN 1451 Std Engschrift.ttf",
+            "symbols": "0123456789"
+         }
+      ],
+      "bpp": 1,
+      "size": 158,
+      "format": "bin",
+      "target_path": "/fonts/"
    }
 }
