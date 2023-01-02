@@ -1,8 +1,11 @@
 #include "displayapp/screens/settings/SettingWatchFace.h"
 #include <lvgl/lvgl.h>
 #include "displayapp/DisplayApp.h"
+#include "displayapp/screens/CheckboxList.h"
 #include "displayapp/screens/Screen.h"
 #include "components/settings/Settings.h"
+#include "displayapp/screens/WatchFaceInfineat.h"
+#include "displayapp/screens/WatchFaceCasioStyleG7710.h"
 
 using namespace Pinetime::Applications::Screens;
 
