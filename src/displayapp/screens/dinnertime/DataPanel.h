@@ -10,12 +10,13 @@ namespace Pinetime {
       namespace DinnerTime {
         class DataPanel {
         public:
-          void Create(lv_obj_t* parent, lv_color_t backgroundColour, lv_color_t foregroundColour, lv_color_t highlightColour, lv_font_t* dataFont);
+          void Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t foregroundColor, lv_color_t highlightColor, lv_font_t* dataFont);
           void SetBatteryPercentage(uint8_t percentage);
           void SetDate(const char* shortDayName, uint8_t dayNumber);
           void SetHeartrate(uint8_t bpm);
           void SetSeconds(uint8_t seconds);
           void SetSteps(uint32_t dayNumber);
+          void SetForegroundColor(lv_color_t color);
           void ShowBluetoothIcon(bool show);
           void ShowNotificationIcon(bool show);
           void ShowPowerIcon(bool show);

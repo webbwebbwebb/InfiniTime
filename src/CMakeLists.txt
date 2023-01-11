@@ -433,6 +433,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/WatchFaceCasioStyleG7710.cpp
         displayapp/screens/dinnertime/ClockPanel.cpp
         displayapp/screens/dinnertime/DataPanel.cpp
+        displayapp/screens/dinnertime/MenuOverlay.cpp
         displayapp/screens/dinnertime/WatchFaceDinnerTime.cpp
 
         ##

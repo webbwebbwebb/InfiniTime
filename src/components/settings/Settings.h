@@ -35,7 +35,8 @@ namespace Pinetime {
         Magenta,
         Purple,
         Orange,
-        Pink
+        Pink,
+        HotPink
       };
       enum class PTSGaugeStyle : uint8_t { Full, Half, Numeric };
 
@@ -48,6 +49,11 @@ namespace Pinetime {
       struct WatchFaceInfineat {
         bool showSideCover = true;
         int colorIndex = 0;
+      };
+      struct WatchFaceDinnerTime {
+        Colors backgroundColor = Colors::Black;
+        Colors foregroundColor = Colors::Orange;
+        Colors highlightColor = Colors::White;
       };
 
       Settings(Pinetime::Controllers::FS& fs);
@@ -126,6 +132,24 @@ namespace Pinetime {
       int GetInfineatColorIndex() const {
         return settings.watchFaceInfineat.colorIndex;
       };
+
+      Colors GetDinnerTimeBackgroundColor() const {
+        return settings.watchFaceDinnerTime.backgroundColor;
+      }
+
+      Colors GetDinnerTimeForegroundColor() const {
+        return settings.watchFaceDinnerTime.foregroundColor;
+      }
+      void SetDinnerTimeForegroundColor(Colors color) {
+        if (color != settings.watchFaceDinnerTime.foregroundColor) {
+          settings.watchFaceDinnerTime.foregroundColor = color;
+          settingsChanged = true;
+        }
+      };
+
+      Colors GetDinnerTimeHighlightColor() const {
+        return settings.watchFaceDinnerTime.highlightColor;
+      }
 
       void SetPTSGaugeStyle(PTSGaugeStyle gaugeStyle) {
         if (gaugeStyle != settings.PTS.gaugeStyle)
@@ -254,7 +278,7 @@ namespace Pinetime {
     private:
       Pinetime::Controllers::FS& fs;
 
-      static constexpr uint32_t settingsVersion = 0x0004;
+      static constexpr uint32_t settingsVersion = 0x0005;
       struct SettingsData {
         uint32_t version = settingsVersion;
         uint32_t stepsGoal = 10000;
@@ -269,6 +293,8 @@ namespace Pinetime {
         PineTimeStyle PTS;
 
         WatchFaceInfineat watchFaceInfineat;
+
+        WatchFaceDinnerTime watchFaceDinnerTime;
 
         std::bitset<4> wakeUpMode {0};
         uint16_t shakeWakeThreshold = 150;

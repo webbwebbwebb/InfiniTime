@@ -10,6 +10,7 @@
 #include "displayapp/widgets/StatusIcons.h"
 #include "displayapp/screens/dinnertime/ClockPanel.h"
 #include "displayapp/screens/dinnertime/DataPanel.h"
+#include "displayapp/screens/dinnertime/MenuOverlay.h"
 
 extern lv_font_t din_1451_std_engschrift_28;
 extern lv_font_t din_1451_std_engschrift_158;
@@ -33,14 +34,19 @@ namespace Pinetime {
                           Controllers::DateTime& dateTimeController,
                           Controllers::Battery& batteryController,
                           Controllers::Ble& bleController,
-                          Controllers::NotificationManager& notificatioManager,
+                          Controllers::NotificationManager& notificationManager,
                           Controllers::Settings& settingsController,
                           Controllers::HeartRateController& heartRateController,
                           Controllers::MotionController& motionController,
                           Controllers::FS& filesystem);
           ~WatchFaceDinnerTime() override;
 
+          bool OnButtonPushed() override;
+          bool OnTouchEvent(TouchEvents event) override;
           void Refresh() override;
+
+          void OnForegroundColourChanged(Pinetime::Controllers::Settings::Colors newForegroundColor);
+          static void OnForegroundColourChangedWrapper(void* ptr2Object, Pinetime::Controllers::Settings::Colors newForegroundColor);
 
           static bool IsAvailable(Pinetime::Controllers::FS& filesystem);
 
@@ -69,11 +75,12 @@ namespace Pinetime {
           
           ClockPanel clockPanel;
           DataPanel dataPanel;
+          MenuOverlay menuOverlay;
 
           Controllers::Battery& batteryController;
           Controllers::Ble& bleController;
           Controllers::DateTime& dateTimeController;
-          Controllers::NotificationManager& notificatioManager;
+          Controllers::NotificationManager& notificationManager;
           Controllers::Settings& settingsController;
           Controllers::HeartRateController& heartRateController;
           Controllers::MotionController& motionController;
