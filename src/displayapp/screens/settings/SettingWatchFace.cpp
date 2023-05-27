@@ -1,11 +1,9 @@
 #include "displayapp/screens/settings/SettingWatchFace.h"
 #include <lvgl/lvgl.h>
 #include "displayapp/DisplayApp.h"
-#include "displayapp/screens/CheckboxList.h"
 #include "displayapp/screens/Screen.h"
 #include "components/settings/Settings.h"
-#include "displayapp/screens/WatchFaceInfineat.h"
-#include "displayapp/screens/WatchFaceCasioStyleG7710.h"
+#include "displayapp/WatchFaces.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -25,7 +23,7 @@ auto SettingWatchFace::CreateScreenList() const {
 SettingWatchFace::SettingWatchFace(Pinetime::Applications::DisplayApp* app,
                                    Pinetime::Controllers::Settings& settingsController,
                                    Pinetime::Controllers::FS& filesystem)
-  : Screen(app),
+  : app {app},
     settingsController {settingsController},
     filesystem {filesystem},
     screens {app, 0, CreateScreenList(), Screens::ScreenListModes::UpDown} {
@@ -48,12 +46,11 @@ std::unique_ptr<Screen> SettingWatchFace::CreateScreen(unsigned int screenNum) c
   return std::make_unique<Screens::CheckboxList>(
     screenNum,
     nScreens,
-    app,
     title,
     symbol,
-    settingsController.GetClockFace(),
-    [&settings = settingsController](uint32_t clockFace) {
-      settings.SetClockFace(clockFace);
+    static_cast<uint32_t>(settingsController.GetWatchFace()),
+    [&settings = settingsController](uint32_t index) {
+      settings.SetWatchFace(static_cast<WatchFace>(index));
       settings.SaveSettings();
     },
     watchfacesOnThisScreen);

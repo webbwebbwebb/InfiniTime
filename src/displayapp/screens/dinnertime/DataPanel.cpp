@@ -4,6 +4,10 @@
 
 using namespace Pinetime::Applications::Screens::DinnerTime;
 
+DataPanel::DataPanel() : batteryIcon(true) {
+  
+}
+
 void DataPanel::Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t foregroundColor, lv_color_t highlightColor, lv_font_t* dataFont) {
 
   const lv_coord_t width = 112;

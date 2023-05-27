@@ -11,9 +11,10 @@
 #include "displayapp/screens/dinnertime/ClockPanel.h"
 #include "displayapp/screens/dinnertime/DataPanel.h"
 #include "displayapp/screens/dinnertime/MenuOverlay.h"
+#include "utility/DirtyValue.h"
 
-extern lv_font_t din_1451_std_engschrift_28;
-extern lv_font_t din_1451_std_engschrift_158;
+extern lv_font_t din_1451_engschrift_28;
+extern lv_font_t din_1451_engschrift_158;
 
 namespace Pinetime {
   namespace Controllers {
@@ -30,15 +31,15 @@ namespace Pinetime {
       namespace DinnerTime {
         class WatchFaceDinnerTime : public Screen {
         public:
-          WatchFaceDinnerTime(Applications::DisplayApp* app,
+          WatchFaceDinnerTime(
+                          const Controllers::Battery& batteryController,
+                          const Controllers::Ble& bleController,
                           Controllers::DateTime& dateTimeController,
-                          Controllers::Battery& batteryController,
-                          Controllers::Ble& bleController,
-                          Controllers::NotificationManager& notificationManager,
-                          Controllers::Settings& settingsController,
                           Controllers::HeartRateController& heartRateController,
                           Controllers::MotionController& motionController,
-                          Controllers::FS& filesystem);
+                          Controllers::NotificationManager& notificationManager,
+                          Controllers::Settings& settingsController);
+                          
           ~WatchFaceDinnerTime() override;
 
           bool OnButtonPushed() override;
@@ -60,16 +61,16 @@ namespace Pinetime {
           Controllers::DateTime::Days currentDayOfWeek = Pinetime::Controllers::DateTime::Days::Unknown;
           uint8_t currentDay = 0;
 
-          DirtyValue<uint8_t> batteryPercentRemaining {};
-          DirtyValue<bool> powerPresent {};
-          DirtyValue<bool> bleState {};
-          DirtyValue<bool> bleRadioEnabled {};
-          DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>> currentDateTime {};
-          DirtyValue<bool> motionSensorOk {};
-          DirtyValue<uint32_t> stepCount {};
-          DirtyValue<uint8_t> heartbeat {};
-          DirtyValue<bool> heartbeatRunning {};
-          DirtyValue<bool> notificationState {};
+          Utility::DirtyValue<uint8_t> batteryPercentRemaining {};
+          Utility::DirtyValue<bool> powerPresent {};
+          Utility::DirtyValue<bool> bleState {};
+          Utility::DirtyValue<bool> bleRadioEnabled {};
+          Utility::DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>> currentDateTime {};
+          Utility::DirtyValue<bool> motionSensorOk {};
+          Utility::DirtyValue<uint32_t> stepCount {};
+          Utility::DirtyValue<uint8_t> heartbeat {};
+          Utility::DirtyValue<bool> heartbeatRunning {};
+          Utility::DirtyValue<bool> notificationState {};
 
           lv_obj_t* root;
           
@@ -77,13 +78,13 @@ namespace Pinetime {
           DataPanel dataPanel;
           MenuOverlay menuOverlay;
 
-          Controllers::Battery& batteryController;
-          Controllers::Ble& bleController;
+          const Controllers::Battery& batteryController;
+          const Controllers::Ble& bleController;
           Controllers::DateTime& dateTimeController;
-          Controllers::NotificationManager& notificationManager;
-          Controllers::Settings& settingsController;
           Controllers::HeartRateController& heartRateController;
           Controllers::MotionController& motionController;
+          Controllers::NotificationManager& notificationManager;
+          Controllers::Settings& settingsController;
 
           lv_task_t* taskRefresh;
 

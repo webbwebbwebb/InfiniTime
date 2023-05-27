@@ -1,5 +1,4 @@
 #include "displayapp/screens/dinnertime/WatchFaceDinnerTime.h"
-#include <date/date.h>
 #include <lvgl/lvgl.h>
 #include <cstdio>
 #include <displayapp/Colors.h>
@@ -13,24 +12,24 @@
 
 using namespace Pinetime::Applications::Screens::DinnerTime;
 
-WatchFaceDinnerTime::WatchFaceDinnerTime(Applications::DisplayApp* app,
+WatchFaceDinnerTime::WatchFaceDinnerTime(
+                                   const Controllers::Battery& batteryController,
+                                   const Controllers::Ble& bleController,
                                    Controllers::DateTime& dateTimeController,
-                                   Controllers::Battery& batteryController,
-                                   Controllers::Ble& bleController,
-                                   Controllers::NotificationManager& notificationManager,
-                                   Controllers::Settings& settingsController,
                                    Controllers::HeartRateController& heartRateController,
                                    Controllers::MotionController& motionController,
-                                   Controllers::FS& filesystem)
-  : Screen(app),
-    currentDateTime {{}},
+                                   Controllers::NotificationManager& notificationManager,
+                                   Controllers::Settings& settingsController)
+                                   /*,Controllers::FS& filesystem)*/
+  : currentDateTime {{}},
+    batteryController {batteryController},
+    bleController {bleController},
     dateTimeController {dateTimeController},
-    notificationManager {notificationManager},
-    settingsController {settingsController},
     heartRateController {heartRateController},
     motionController {motionController},
-    batteryController {batteryController},
-    bleController {bleController} {
+    notificationManager {notificationManager},
+    settingsController {settingsController}
+  {
 
   lv_color_t backgroundColor = Convert(settingsController.GetDinnerTimeBackgroundColor());
   lv_color_t foregroundColor = Convert(settingsController.GetDinnerTimeForegroundColor());
@@ -48,10 +47,10 @@ WatchFaceDinnerTime::WatchFaceDinnerTime(Applications::DisplayApp* app,
     din_1451_std_engschrift_28 = lv_font_load("F:/fonts/din_1451_std_engschrift_28.bin");
   }
 */
-  clockPanel.Create(lv_scr_act(), backgroundColor, foregroundColor, &din_1451_std_engschrift_158);
+  clockPanel.Create(lv_scr_act(), backgroundColor, foregroundColor, &din_1451_engschrift_158);
   lv_obj_align(clockPanel.GetObject(), nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
-  dataPanel.Create(lv_scr_act(), backgroundColor, foregroundColor, highlightColor, &din_1451_std_engschrift_28);
+  dataPanel.Create(lv_scr_act(), backgroundColor, foregroundColor, highlightColor, &din_1451_engschrift_28);
   lv_obj_align(dataPanel.GetObject(), nullptr, LV_ALIGN_IN_TOP_RIGHT, 0, 7);
 
   menuOverlay.Create(lv_scr_act(), this, OnForegroundColourChangedWrapper);
@@ -93,20 +92,13 @@ void WatchFaceDinnerTime::Refresh() {
   currentDateTime = dateTimeController.CurrentDateTime();
 
   if (currentDateTime.IsUpdated()) {
-    auto newDateTime = currentDateTime.Get();
-
-    auto dp = date::floor<date::days>(newDateTime);
-    auto time = date::make_time(newDateTime - dp);
-    auto yearMonthDay = date::year_month_day(dp);
-
-    auto year = static_cast<int>(yearMonthDay.year());
-    auto month = static_cast<Pinetime::Controllers::DateTime::Months>(static_cast<unsigned>(yearMonthDay.month()));
-    auto day = static_cast<unsigned>(yearMonthDay.day());
-    auto dayOfWeek = static_cast<Pinetime::Controllers::DateTime::Days>(date::weekday(yearMonthDay).iso_encoding());
-
-    uint8_t hour = time.hours().count();
-    uint8_t minute = time.minutes().count();
-    uint8_t second = time.seconds().count();
+    auto hour = dateTimeController.Hours();
+    auto minute = dateTimeController.Minutes();
+    auto second = dateTimeController.Seconds();
+    auto year = dateTimeController.Year();
+    auto month = dateTimeController.Month();
+    auto dayOfWeek = dateTimeController.DayOfWeek();
+    auto day = dateTimeController.Day();
 
     if (displayedSecond != second) {
       displayedSecond = second;
@@ -145,8 +137,7 @@ void WatchFaceDinnerTime::Refresh() {
   }
 
   stepCount = motionController.NbSteps();
-  motionSensorOk = motionController.IsSensorOk();
-  if (stepCount.IsUpdated() || motionSensorOk.IsUpdated()) {
+  if (stepCount.IsUpdated()) {
     dataPanel.SetSteps(stepCount.Get());
   }
 
@@ -183,8 +174,9 @@ bool WatchFaceDinnerTime::OnTouchEvent(Pinetime::Applications::TouchEvents event
   return false;
 }
 
-bool WatchFaceDinnerTime::IsAvailable(Pinetime::Controllers::FS& filesystem) {
 /*
+bool WatchFaceDinnerTime::IsAvailable(Pinetime::Controllers::FS& filesystem) {
+
   lfs_file file = {};
 
   if (filesystem.FileOpen(&file, "/fonts/din_1451_std_engschrift_158.bin", LFS_O_RDONLY) < 0) {
@@ -196,6 +188,7 @@ bool WatchFaceDinnerTime::IsAvailable(Pinetime::Controllers::FS& filesystem) {
     return false;
   }
   filesystem.FileClose(&file);
-*/
+
   return true;
 }
+*/

@@ -10,6 +10,7 @@ namespace Pinetime {
       namespace DinnerTime {
         class DataPanel {
         public:
+          DataPanel();
           void Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t foregroundColor, lv_color_t highlightColor, lv_font_t* dataFont);
           void SetBatteryPercentage(uint8_t percentage);
           void SetDate(const char* shortDayName, uint8_t dayNumber);
@@ -23,7 +24,7 @@ namespace Pinetime {
           lv_obj_t* GetObject();
 
         private:
-          Screens::BatteryIcon batteryIcon;
+          BatteryIcon batteryIcon;
           lv_obj_t* root;
 
           lv_obj_t* batteryRow;

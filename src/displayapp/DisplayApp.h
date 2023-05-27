@@ -1,6 +1,5 @@
 #pragma once
 #include <FreeRTOS.h>
-#include <date/date.h>
 #include <queue.h>
 #include <task.h>
 #include <memory>
@@ -13,21 +12,21 @@
 #include "components/firmwarevalidator/FirmwareValidator.h"
 #include "components/settings/Settings.h"
 #include "displayapp/screens/Screen.h"
-#include "components/timer/TimerController.h"
+#include "components/timer/Timer.h"
 #include "components/alarm/AlarmController.h"
 #include "touchhandler/TouchHandler.h"
 
 #include "displayapp/Messages.h"
 #include "BootErrors.h"
 
-#include "StaticStack.h"
+#include "utility/StaticStack.h"
 
 namespace Pinetime {
 
   namespace Drivers {
     class St7789;
     class Cst816S;
-    class WatchdogView;
+    class Watchdog;
   }
 
   namespace Controllers {
@@ -52,18 +51,16 @@ namespace Pinetime {
       enum class FullRefreshDirections { None, Up, Down, Left, Right, LeftAnim, RightAnim };
 
       DisplayApp(Drivers::St7789& lcd,
-                 Components::LittleVgl& lvgl,
-                 Drivers::Cst816S&,
-                 Controllers::Battery& batteryController,
-                 Controllers::Ble& bleController,
+                 const Drivers::Cst816S&,
+                 const Controllers::Battery& batteryController,
+                 const Controllers::Ble& bleController,
                  Controllers::DateTime& dateTimeController,
-                 Drivers::WatchdogView& watchdog,
+                 const Drivers::Watchdog& watchdog,
                  Pinetime::Controllers::NotificationManager& notificationManager,
                  Pinetime::Controllers::HeartRateController& heartRateController,
                  Controllers::Settings& settingsController,
                  Pinetime::Controllers::MotorController& motorController,
                  Pinetime::Controllers::MotionController& motionController,
-                 Pinetime::Controllers::TimerController& timerController,
                  Pinetime::Controllers::AlarmController& alarmController,
                  Pinetime::Controllers::BrightnessController& brightnessController,
                  Pinetime::Controllers::TouchHandler& touchHandler,
@@ -79,25 +76,25 @@ namespace Pinetime {
 
     private:
       Pinetime::Drivers::St7789& lcd;
-      Pinetime::Components::LittleVgl& lvgl;
-      Pinetime::Drivers::Cst816S& touchPanel;
-      Pinetime::Controllers::Battery& batteryController;
-      Pinetime::Controllers::Ble& bleController;
+      const Pinetime::Drivers::Cst816S& touchPanel;
+      const Pinetime::Controllers::Battery& batteryController;
+      const Pinetime::Controllers::Ble& bleController;
       Pinetime::Controllers::DateTime& dateTimeController;
-      Pinetime::Drivers::WatchdogView& watchdog;
+      const Pinetime::Drivers::Watchdog& watchdog;
       Pinetime::System::SystemTask* systemTask = nullptr;
       Pinetime::Controllers::NotificationManager& notificationManager;
       Pinetime::Controllers::HeartRateController& heartRateController;
       Pinetime::Controllers::Settings& settingsController;
       Pinetime::Controllers::MotorController& motorController;
       Pinetime::Controllers::MotionController& motionController;
-      Pinetime::Controllers::TimerController& timerController;
       Pinetime::Controllers::AlarmController& alarmController;
       Pinetime::Controllers::BrightnessController& brightnessController;
       Pinetime::Controllers::TouchHandler& touchHandler;
       Pinetime::Controllers::FS& filesystem;
 
       Pinetime::Controllers::FirmwareValidator validator;
+      Pinetime::Components::LittleVgl lvgl;
+      Pinetime::Controllers::Timer timer;
 
       TaskHandle_t taskHandle;
 
@@ -128,8 +125,10 @@ namespace Pinetime {
       void ApplyBrightness();
 
       static constexpr size_t returnAppStackSize = 10;
-      StaticStack<Apps, returnAppStackSize> returnAppStack;
-      StaticStack<FullRefreshDirections, returnAppStackSize> appStackDirections;
+      Utility::StaticStack<Apps, returnAppStackSize> returnAppStack;
+      Utility::StaticStack<FullRefreshDirections, returnAppStackSize> appStackDirections;
+
+      bool isDimmed = false;
     };
   }
 }

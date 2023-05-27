@@ -26,6 +26,7 @@ namespace Pinetime {
         bool OnTouchEvent(TouchEvents event) override;
 
       private:
+        DisplayApp* app;
         auto CreateScreenList() const;
         std::unique_ptr<Screen> CreateScreen(unsigned int screenNum) const;
 
@@ -47,7 +48,8 @@ namespace Pinetime {
            {"Terminal", true},
            {"Infineat face", Applications::Screens::WatchFaceInfineat::IsAvailable(filesystem)},
            {"Casio G7710", Applications::Screens::WatchFaceCasioStyleG7710::IsAvailable(filesystem)},
-           {"DINner time", Applications::Screens::DinnerTime::WatchFaceDinnerTime::IsAvailable(filesystem)},
+           {"DINner time", true},
+           //{"DINner time", Applications::Screens::DinnerTime::WatchFaceDinnerTime::IsAvailable(filesystem)},
            {"", false}}};
         ScreenList<nScreens> screens;
       };
