@@ -40,12 +40,14 @@ namespace Pinetime {
         HotPink
       };
       enum class PTSGaugeStyle : uint8_t { Full, Half, Numeric };
+      enum class PTSWeather : uint8_t { On, Off };
 
       struct PineTimeStyle {
         Colors ColorTime = Colors::Teal;
         Colors ColorBar = Colors::Teal;
         Colors ColorBG = Colors::Black;
         PTSGaugeStyle gaugeStyle = PTSGaugeStyle::Full;
+        PTSWeather weatherEnable = PTSWeather::Off;
       };
 
       struct WatchFaceInfineat {
@@ -170,6 +172,16 @@ namespace Pinetime {
         return settings.PTS.gaugeStyle;
       };
 
+      void SetPTSWeather(PTSWeather weatherEnable) {
+        if (weatherEnable != settings.PTS.weatherEnable)
+          settingsChanged = true;
+        settings.PTS.weatherEnable = weatherEnable;
+      };
+
+      PTSWeather GetPTSWeather() const {
+        return settings.PTS.weatherEnable;
+      };
+
       void SetAppMenu(uint8_t menu) {
         appMenu = menu;
       };
@@ -292,6 +304,7 @@ namespace Pinetime {
       Pinetime::Controllers::FS& fs;
 
       static constexpr uint32_t settingsVersion = 0x0005;
+
       struct SettingsData {
         uint32_t version = settingsVersion;
         uint32_t stepsGoal = 10000;
