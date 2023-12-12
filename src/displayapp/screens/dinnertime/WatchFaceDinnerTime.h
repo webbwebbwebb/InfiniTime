@@ -22,7 +22,6 @@ namespace Pinetime {
     class Battery;
     class Ble;
     class NotificationManager;
-    class HeartRateController;
     class MotionController;
   }
 
@@ -35,10 +34,10 @@ namespace Pinetime {
                           const Controllers::Battery& batteryController,
                           const Controllers::Ble& bleController,
                           Controllers::DateTime& dateTimeController,
-                          Controllers::HeartRateController& heartRateController,
                           Controllers::MotionController& motionController,
                           Controllers::NotificationManager& notificationManager,
-                          Controllers::Settings& settingsController);
+                          Controllers::Settings& settingsController,
+                          Controllers::WeatherService& weather);
                           
           ~WatchFaceDinnerTime() override;
 
@@ -68,9 +67,10 @@ namespace Pinetime {
           Utility::DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>> currentDateTime {};
           Utility::DirtyValue<bool> motionSensorOk {};
           Utility::DirtyValue<uint32_t> stepCount {};
-          Utility::DirtyValue<uint8_t> heartbeat {};
-          Utility::DirtyValue<bool> heartbeatRunning {};
           Utility::DirtyValue<bool> notificationState {};
+          Utility::DirtyValue<int16_t> temperature {};
+          int16_t clouds = 0;
+          int16_t precipitation = 0;
 
           lv_obj_t* root;
           
@@ -81,10 +81,10 @@ namespace Pinetime {
           const Controllers::Battery& batteryController;
           const Controllers::Ble& bleController;
           Controllers::DateTime& dateTimeController;
-          Controllers::HeartRateController& heartRateController;
           Controllers::MotionController& motionController;
           Controllers::NotificationManager& notificationManager;
           Controllers::Settings& settingsController;
+          Controllers::WeatherService& weatherService;
 
           lv_task_t* taskRefresh;
 

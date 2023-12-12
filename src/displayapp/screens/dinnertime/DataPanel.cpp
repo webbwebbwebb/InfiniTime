@@ -47,33 +47,34 @@ void DataPanel::Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t 
   lv_label_set_text_static(batteryPercentageValue, 0);
   lv_obj_align(batteryPercentageValue, nullptr, LV_ALIGN_IN_RIGHT_MID, -rightPadding, 0);
 
-  heartbeatRow = lv_obj_create(root, nullptr);
-  lv_obj_set_size(heartbeatRow, width, rowHeight);
-  lv_obj_set_style_local_radius(heartbeatRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-  lv_obj_set_style_local_bg_color(heartbeatRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
-  lv_obj_align(heartbeatRow, batteryRow, LV_ALIGN_OUT_BOTTOM_MID, 0, rowSpacing);
+  weatherRow = lv_obj_create(root, nullptr);
+  lv_obj_set_size(weatherRow, width, rowHeight);
+  lv_obj_set_style_local_radius(weatherRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
+  lv_obj_set_style_local_bg_color(weatherRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
+  lv_obj_align(weatherRow, batteryRow, LV_ALIGN_OUT_BOTTOM_MID, 0, rowSpacing);
 
-  heartbeatIconContainer = lv_obj_create(heartbeatRow, nullptr);
-  lv_obj_set_size(heartbeatIconContainer, 32, rowHeight);
-  lv_obj_set_style_local_bg_color(heartbeatIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
-  lv_obj_align(heartbeatIconContainer, nullptr, LV_ALIGN_IN_LEFT_MID, 0, 0);
+  weatherIconContainer = lv_obj_create(weatherRow, nullptr);
+  lv_obj_set_size(weatherIconContainer, 32, rowHeight);
+  lv_obj_set_style_local_bg_color(weatherIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
+  lv_obj_align(weatherIconContainer, nullptr, LV_ALIGN_IN_LEFT_MID, 0, 0);
 
-  heartbeatIcon = lv_label_create(heartbeatIconContainer, nullptr);
-  lv_obj_set_style_local_text_color(heartbeatIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, highlightColor);
-  lv_label_set_text_static(heartbeatIcon, Symbols::heartBeat);
-  lv_obj_align(heartbeatIcon, nullptr, LV_ALIGN_CENTER, 0, 0);
+  weatherIcon = lv_label_create(weatherIconContainer, nullptr);
+  lv_obj_set_style_local_text_color(weatherIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, highlightColor);
+  lv_obj_set_style_local_text_font(weatherIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &fontawesome_weathericons);
+  lv_label_set_text_static(weatherIcon, Symbols::ban);
+  lv_obj_align(weatherIcon, nullptr, LV_ALIGN_CENTER, 0, 0);
 
-  heartbeatValue = lv_label_create(heartbeatRow, nullptr);
-  lv_obj_set_style_local_text_color(heartbeatValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, backgroundColor);
-  lv_obj_set_style_local_text_font(heartbeatValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, dataFont);
-  lv_label_set_text_static(heartbeatValue, "?");
-  lv_obj_align(heartbeatValue, nullptr, LV_ALIGN_IN_RIGHT_MID, -rightPadding, 0);
+  temperatureValue = lv_label_create(weatherRow, nullptr);
+  lv_obj_set_style_local_text_color(temperatureValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, backgroundColor);
+  lv_obj_set_style_local_text_font(temperatureValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, dataFont);
+  lv_label_set_text_static(temperatureValue, "--");
+  lv_obj_align(temperatureValue, nullptr, LV_ALIGN_IN_RIGHT_MID, -rightPadding, 0);
 
   stepRow = lv_obj_create(root, nullptr);
   lv_obj_set_size(stepRow, width, rowHeight);
   lv_obj_set_style_local_radius(stepRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
   lv_obj_set_style_local_bg_color(stepRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
-  lv_obj_align(stepRow, heartbeatRow, LV_ALIGN_OUT_BOTTOM_MID, 0, rowSpacing);
+  lv_obj_align(stepRow, weatherRow, LV_ALIGN_OUT_BOTTOM_MID, 0, rowSpacing);
 
   stepIconContainer = lv_obj_create(stepRow, nullptr);
   lv_obj_set_size(stepIconContainer, 32, rowHeight);
@@ -161,8 +162,8 @@ void DataPanel::Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t 
 void DataPanel::SetForegroundColor(lv_color_t color){
   lv_obj_set_style_local_bg_color(batteryRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
   lv_obj_set_style_local_bg_color(batteryIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
-  lv_obj_set_style_local_bg_color(heartbeatRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
-  lv_obj_set_style_local_bg_color(heartbeatIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
+  lv_obj_set_style_local_bg_color(weatherRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
+  lv_obj_set_style_local_bg_color(weatherIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
   lv_obj_set_style_local_bg_color(stepRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
   lv_obj_set_style_local_bg_color(stepIconContainer, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
   lv_obj_set_style_local_bg_color(dateRow, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
@@ -194,9 +195,14 @@ void DataPanel::SetSteps(uint32_t steps) {
   lv_obj_realign(stepValue);
 }
 
-void DataPanel::SetHeartrate(uint8_t bpm) {
-  lv_label_set_text_fmt(heartbeatValue, "%d", bpm);
-  lv_obj_realign(heartbeatValue);
+void DataPanel::SetTemperature(int16_t degrees) {
+  lv_label_set_text_fmt(temperatureValue, "%d°", degrees);
+  lv_obj_realign(temperatureValue);
+}
+
+void DataPanel::SetWeatherIcon(const char* symbol) {
+  lv_label_set_text(weatherIcon, symbol);
+  lv_obj_realign(weatherIcon);
 }
 
 void DataPanel::ShowBluetoothIcon(bool show) {

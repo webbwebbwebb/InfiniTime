@@ -14,7 +14,8 @@ namespace Pinetime {
           void Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t foregroundColor, lv_color_t highlightColor, lv_font_t* dataFont);
           void SetBatteryPercentage(uint8_t percentage);
           void SetDate(const char* shortDayName, uint8_t dayNumber);
-          void SetHeartrate(uint8_t bpm);
+          void SetTemperature(int16_t degrees);
+          void SetWeatherIcon(const char* symbol);
           void SetSeconds(uint8_t seconds);
           void SetSteps(uint32_t dayNumber);
           void SetForegroundColor(lv_color_t color);
@@ -32,10 +33,10 @@ namespace Pinetime {
           lv_obj_t* powerIcon;
           lv_obj_t* batteryPercentageValue;
 
-          lv_obj_t* heartbeatRow;
-          lv_obj_t* heartbeatIconContainer;
-          lv_obj_t* heartbeatIcon;
-          lv_obj_t* heartbeatValue;
+          lv_obj_t* weatherRow;
+          lv_obj_t* weatherIconContainer;
+          lv_obj_t* weatherIcon;
+          lv_obj_t* temperatureValue;
 
           lv_obj_t* stepRow;
           lv_obj_t* stepIconContainer;

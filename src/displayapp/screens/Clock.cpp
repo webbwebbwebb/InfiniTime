@@ -140,8 +140,8 @@ std::unique_ptr<Screen> Clock::WatchFaceDinnerTime() {
   return std::make_unique<Screens::DinnerTime::WatchFaceDinnerTime>(batteryController,
                                                                     bleController,
                                                                     dateTimeController,
-                                                                    heartRateController,
                                                                     motionController,
                                                                     notificationManager,
-                                                                    settingsController);
+                                                                    settingsController,
+                                                                    weatherService);
 }

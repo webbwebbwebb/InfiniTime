@@ -14,21 +14,21 @@ void ClockPanel::Create(lv_obj_t* parent, lv_color_t backgroundColor, lv_color_t
   lv_obj_set_style_local_bg_color(root, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, backgroundColor);
 
   hourValue = lv_label_create(root, nullptr);
-  lv_obj_set_style_local_text_color(hourValue, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
+  lv_obj_set_style_local_text_color(hourValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
   lv_obj_set_style_local_text_font(hourValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, timeFont);
   lv_obj_set_style_local_text_letter_space(hourValue,LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, -8);
   lv_obj_align(hourValue, nullptr, LV_ALIGN_IN_TOP_LEFT, 1, 5);
 
   minuteValue = lv_label_create(root, nullptr);
-  lv_obj_set_style_local_text_color(minuteValue, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
+  lv_obj_set_style_local_text_color(minuteValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, foregroundColor);
   lv_obj_set_style_local_text_font(minuteValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, timeFont);
   lv_obj_set_style_local_text_letter_space(minuteValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, -8);
   lv_obj_align(minuteValue, hourValue, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 2);
 }
 
 void ClockPanel::SetForegroundColor(lv_color_t color){
-  lv_obj_set_style_local_text_color(hourValue, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
-  lv_obj_set_style_local_text_color(minuteValue, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, color);
+  lv_obj_set_style_local_text_color(hourValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, color);
+  lv_obj_set_style_local_text_color(minuteValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, color);
 }
 
 void ClockPanel::SetHour(uint8_t hours) {

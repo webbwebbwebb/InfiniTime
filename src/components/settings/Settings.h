@@ -55,9 +55,7 @@ namespace Pinetime {
         int colorIndex = 0;
       };
       struct WatchFaceDinnerTime {
-        Colors backgroundColor = Colors::Black;
         Colors foregroundColor = Colors::Orange;
-        Colors highlightColor = Colors::White;
       };
 
       Settings(Pinetime::Controllers::FS& fs);
@@ -144,10 +142,6 @@ namespace Pinetime {
         return settings.watchFaceInfineat.colorIndex;
       };
 
-      Colors GetDinnerTimeBackgroundColor() const {
-        return settings.watchFaceDinnerTime.backgroundColor;
-      }
-
       Colors GetDinnerTimeForegroundColor() const {
         return settings.watchFaceDinnerTime.foregroundColor;
       }
@@ -157,10 +151,6 @@ namespace Pinetime {
           settingsChanged = true;
         }
       };
-
-      Colors GetDinnerTimeHighlightColor() const {
-        return settings.watchFaceDinnerTime.highlightColor;
-      }
 
       void SetPTSGaugeStyle(PTSGaugeStyle gaugeStyle) {
         if (gaugeStyle != settings.PTS.gaugeStyle)
@@ -303,7 +293,7 @@ namespace Pinetime {
     private:
       Pinetime::Controllers::FS& fs;
 
-      static constexpr uint32_t settingsVersion = 0x0005;
+      static constexpr uint32_t settingsVersion = 0x0007;
 
       struct SettingsData {
         uint32_t version = settingsVersion;

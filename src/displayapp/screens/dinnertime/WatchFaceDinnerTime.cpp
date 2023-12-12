@@ -6,7 +6,7 @@
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
-#include "components/heartrate/HeartRateController.h"
+#include "components/ble/weather/WeatherService.h"
 #include "components/motion/MotionController.h"
 #include "components/settings/Settings.h"
 
@@ -16,24 +16,24 @@ WatchFaceDinnerTime::WatchFaceDinnerTime(
                                    const Controllers::Battery& batteryController,
                                    const Controllers::Ble& bleController,
                                    Controllers::DateTime& dateTimeController,
-                                   Controllers::HeartRateController& heartRateController,
                                    Controllers::MotionController& motionController,
                                    Controllers::NotificationManager& notificationManager,
-                                   Controllers::Settings& settingsController)
+                                   Controllers::Settings& settingsController,
+                                   Controllers::WeatherService& weatherService)
                                    /*,Controllers::FS& filesystem)*/
   : currentDateTime {{}},
     batteryController {batteryController},
     bleController {bleController},
     dateTimeController {dateTimeController},
-    heartRateController {heartRateController},
     motionController {motionController},
     notificationManager {notificationManager},
-    settingsController {settingsController}
+    settingsController {settingsController},
+    weatherService {weatherService}
   {
 
-  lv_color_t backgroundColor = Convert(settingsController.GetDinnerTimeBackgroundColor());
+  lv_color_t backgroundColor = LV_COLOR_BLACK;
   lv_color_t foregroundColor = Convert(settingsController.GetDinnerTimeForegroundColor());
-  lv_color_t highlightColor = Convert(settingsController.GetDinnerTimeHighlightColor());
+  lv_color_t highlightColor = LV_COLOR_WHITE;
 
 /*
   lfs_file f = {};
@@ -130,12 +130,6 @@ void WatchFaceDinnerTime::Refresh() {
     }
   }
 
-  heartbeat = heartRateController.HeartRate();
-  heartbeatRunning = heartRateController.State() != Controllers::HeartRateController::States::Stopped;
-  if (heartbeat.IsUpdated() || heartbeatRunning.IsUpdated()) {
-    dataPanel.SetHeartrate(heartbeat.Get());
-  }
-
   stepCount = motionController.NbSteps();
   if (stepCount.IsUpdated()) {
     dataPanel.SetSteps(stepCount.Get());
@@ -143,6 +137,29 @@ void WatchFaceDinnerTime::Refresh() {
 
   if (menuOverlay.Visible() && menuOverlay.Inactive()) {
       menuOverlay.Hide();
+  }
+
+  if (weatherService.GetCurrentTemperature()->timestamp != 0 && weatherService.GetCurrentClouds()->timestamp != 0 &&
+      weatherService.GetCurrentPrecipitation()->timestamp != 0) {
+    temperature = (weatherService.GetCurrentTemperature()->temperature / 100);
+    clouds = (weatherService.GetCurrentClouds()->amount);
+    precipitation = (weatherService.GetCurrentPrecipitation()->amount);
+    if (temperature.IsUpdated()) {
+      dataPanel.SetTemperature(temperature.Get());
+      if ((clouds <= 30) && (precipitation == 0)) {
+        dataPanel.SetWeatherIcon(Symbols::sun);
+      } else if ((clouds >= 70) && (clouds <= 90) && (precipitation == 1)) {
+        dataPanel.SetWeatherIcon(Symbols::cloudSunRain);
+      } else if ((clouds > 90) && (precipitation == 0)) {
+        dataPanel.SetWeatherIcon(Symbols::cloud);
+      } else if ((clouds > 70) && (precipitation >= 2)) {
+        dataPanel.SetWeatherIcon(Symbols::cloudShowersHeavy);
+      } else {
+        dataPanel.SetWeatherIcon(Symbols::cloudSun);
+      };
+    }
+  } else {
+    dataPanel.SetWeatherIcon(Symbols::ban);
   }
 }
 
