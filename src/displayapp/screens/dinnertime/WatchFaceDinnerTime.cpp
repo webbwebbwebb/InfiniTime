@@ -3,12 +3,13 @@
 #include <cstdio>
 #include <displayapp/Colors.h>
 #include "displayapp/screens/Symbols.h"
+#include "displayapp/screens/WeatherSymbols.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
-#include "components/ble/weather/WeatherService.h"
 #include "components/motion/MotionController.h"
 #include "components/settings/Settings.h"
+#include "components/ble/SimpleWeatherService.h"
 
 using namespace Pinetime::Applications::Screens::DinnerTime;
 
@@ -19,7 +20,7 @@ WatchFaceDinnerTime::WatchFaceDinnerTime(
                                    Controllers::MotionController& motionController,
                                    Controllers::NotificationManager& notificationManager,
                                    Controllers::Settings& settingsController,
-                                   Controllers::WeatherService& weatherService)
+                                   Controllers::SimpleWeatherService& weatherService)
                                    /*,Controllers::FS& filesystem)*/
   : currentDateTime {{}},
     batteryController {batteryController},
@@ -139,24 +140,18 @@ void WatchFaceDinnerTime::Refresh() {
       menuOverlay.Hide();
   }
 
-  if (weatherService.GetCurrentTemperature()->timestamp != 0 && weatherService.GetCurrentClouds()->timestamp != 0 &&
-      weatherService.GetCurrentPrecipitation()->timestamp != 0) {
-    temperature = (weatherService.GetCurrentTemperature()->temperature / 100);
-    clouds = (weatherService.GetCurrentClouds()->amount);
-    precipitation = (weatherService.GetCurrentPrecipitation()->amount);
-    if (temperature.IsUpdated()) {
-      dataPanel.SetTemperature(temperature.Get());
-      if ((clouds <= 30) && (precipitation == 0)) {
-        dataPanel.SetWeatherIcon(Symbols::sun);
-      } else if ((clouds >= 70) && (clouds <= 90) && (precipitation == 1)) {
-        dataPanel.SetWeatherIcon(Symbols::cloudSunRain);
-      } else if ((clouds > 90) && (precipitation == 0)) {
-        dataPanel.SetWeatherIcon(Symbols::cloud);
-      } else if ((clouds > 70) && (precipitation >= 2)) {
-        dataPanel.SetWeatherIcon(Symbols::cloudShowersHeavy);
-      } else {
-        dataPanel.SetWeatherIcon(Symbols::cloudSun);
-      };
+  currentWeather = weatherService.Current();
+
+  if (currentWeather.IsUpdated()) {
+    auto optCurrentWeather = currentWeather.Get();
+    if (optCurrentWeather) {
+      int16_t temp = optCurrentWeather->temperature;
+      if (settingsController.GetWeatherFormat() == Controllers::Settings::WeatherFormat::Imperial) {
+        temp = Controllers::SimpleWeatherService::CelsiusToFahrenheit(temp);
+      }
+      temp = temp / 100 + (temp % 100 >= 50 ? 1 : 0);
+      dataPanel.SetTemperature(temp);
+      dataPanel.SetWeatherIcon(Symbols::GetSymbol(optCurrentWeather->iconId));
     }
   } else {
     dataPanel.SetWeatherIcon(Symbols::ban);

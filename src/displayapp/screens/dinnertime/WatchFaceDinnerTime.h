@@ -7,6 +7,7 @@
 #include "displayapp/screens/Screen.h"
 #include "components/datetime/DateTimeController.h"
 #include "components/ble/BleController.h"
+#include "components/ble/SimpleWeatherService.h"
 #include "displayapp/widgets/StatusIcons.h"
 #include "displayapp/screens/dinnertime/ClockPanel.h"
 #include "displayapp/screens/dinnertime/DataPanel.h"
@@ -22,7 +23,7 @@ namespace Pinetime {
     class Battery;
     class Ble;
     class NotificationManager;
-    class MotionController;
+    class MotionController;    
   }
 
   namespace Applications {
@@ -37,7 +38,7 @@ namespace Pinetime {
                           Controllers::MotionController& motionController,
                           Controllers::NotificationManager& notificationManager,
                           Controllers::Settings& settingsController,
-                          Controllers::WeatherService& weather);
+                          Controllers::SimpleWeatherService& weather);
                           
           ~WatchFaceDinnerTime() override;
 
@@ -68,9 +69,7 @@ namespace Pinetime {
           Utility::DirtyValue<bool> motionSensorOk {};
           Utility::DirtyValue<uint32_t> stepCount {};
           Utility::DirtyValue<bool> notificationState {};
-          Utility::DirtyValue<int16_t> temperature {};
-          int16_t clouds = 0;
-          int16_t precipitation = 0;
+          Utility::DirtyValue<std::optional<Pinetime::Controllers::SimpleWeatherService::CurrentWeather>> currentWeather {};
 
           lv_obj_t* root;
           
@@ -84,7 +83,7 @@ namespace Pinetime {
           Controllers::MotionController& motionController;
           Controllers::NotificationManager& notificationManager;
           Controllers::Settings& settingsController;
-          Controllers::WeatherService& weatherService;
+          Controllers::SimpleWeatherService& weatherService;
 
           lv_task_t* taskRefresh;
 
@@ -95,5 +94,25 @@ namespace Pinetime {
         };
       }
     }
+
+    template <>
+    struct WatchFaceTraits<WatchFace::DINnerTime> {
+      static constexpr WatchFace watchFace = WatchFace::DINnerTime;
+      static constexpr const char* name = "DINnerTime";
+
+      static Screens::Screen* Create(AppControllers& controllers) {
+        return new Screens::DinnerTime::WatchFaceDinnerTime(controllers.batteryController,
+                                                  controllers.bleController,
+                                                  controllers.dateTimeController,
+                                                  controllers.motionController,
+                                                  controllers.notificationManager,
+                                                  controllers.settingsController,
+                                                  *controllers.weatherController);
+      };
+
+      static bool IsAvailable(Pinetime::Controllers::FS& /*filesystem*/) {
+        return true;
+      }
+    };
   }
 }
