@@ -145,11 +145,10 @@ void WatchFaceDinnerTime::Refresh() {
   if (currentWeather.IsUpdated()) {
     auto optCurrentWeather = currentWeather.Get();
     if (optCurrentWeather) {
-      int16_t temp = optCurrentWeather->temperature;
+      int16_t temp = optCurrentWeather->temperature.Celsius();
       if (settingsController.GetWeatherFormat() == Controllers::Settings::WeatherFormat::Imperial) {
-        temp = Controllers::SimpleWeatherService::CelsiusToFahrenheit(temp);
+        temp = optCurrentWeather->temperature.Fahrenheit();
       }
-      temp = temp / 100 + (temp % 100 >= 50 ? 1 : 0);
       dataPanel.SetTemperature(temp);
       dataPanel.SetWeatherIcon(Symbols::GetSymbol(optCurrentWeather->iconId));
     }
